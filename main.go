@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/GoesToEleven/GolangTraining/tcp/ftp"
 	"log"
 	"net"
 	"path/filepath"
+	"github.com/lorenaggs/golang/ftp"
 )
 
 var port int
