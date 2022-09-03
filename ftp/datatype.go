@@ -2,6 +2,7 @@ package ftp
 
 type dataType int
 
+//keyword to set up the dataType constants ascii = 0 , binary = 1.
 const (
 	ascii dataType = iota
 	binary
@@ -13,9 +14,9 @@ func (c *Conn) setDataType(args []string) {
 	}
 
 	switch args[0] {
-	case "A":
+	case "A": //ASCII
 		c.dataType = ascii
-	case "I": // image/binary
+	case "I": //Image/binary
 		c.dataType = binary
 	default:
 		c.respond(status504)
