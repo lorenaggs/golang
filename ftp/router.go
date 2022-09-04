@@ -10,7 +10,7 @@ import (
 )
 
 // Serve scans incoming requests for valid commands and routes them to handler functions.
-func Serve(c *Conn) {
+func Router(c *Conn) {
 	c.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
 
 	s := bufio.NewScanner(c.conn) //To listen for incoming commands,
@@ -35,7 +35,7 @@ func Serve(c *Conn) {
 		case "exit":
 			c.respond(status221)
 			return
-		case "RETR": // get //the client secretly sends a port
+		case "retr": // get //the client secretly sends a port
 			c.retr(args)
 		case "typeof":
 			c.setDataType(args)

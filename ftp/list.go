@@ -7,7 +7,8 @@ import (
 	"path/filepath"
 )
 
-/**
+/*
+*
 If the user didn’t provide a path argument, we list the contents of the current workDir.
 */
 func (c *Conn) list(args []string) {
@@ -18,7 +19,7 @@ func (c *Conn) list(args []string) {
 		target = filepath.Join(c.rootDir, c.workDir)
 	}
 
-	files, err := ioutil.ReadDir(target)  // returns each file in a directory
+	files, err := ioutil.ReadDir(target) // returns each file in a directory
 	if err != nil {
 		log.Print(err)
 		c.respond(status550)
@@ -49,4 +50,3 @@ func (c *Conn) list(args []string) {
 
 	c.respond(status226)
 }
-This is a more complex
