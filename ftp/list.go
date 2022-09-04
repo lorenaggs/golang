@@ -18,7 +18,7 @@ func (c *Conn) list(args []string) {
 		target = filepath.Join(c.rootDir, c.workDir)
 	}
 
-	files, err := ioutil.ReadDir(target)
+	files, err := ioutil.ReadDir(target)  // returns each file in a directory
 	if err != nil {
 		log.Print(err)
 		c.respond(status550)
@@ -26,7 +26,7 @@ func (c *Conn) list(args []string) {
 	}
 	c.respond(status150)
 
-	dataConn, err := c.dataConnect()
+	dataConn, err := c.dataConnect() // establish a second, temporary connection to the client,
 	if err != nil {
 		log.Print(err)
 		c.respond(status425)
@@ -49,3 +49,4 @@ func (c *Conn) list(args []string) {
 
 	c.respond(status226)
 }
+This is a more complex
