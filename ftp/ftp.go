@@ -24,9 +24,9 @@ func Serve(c *Conn) {
 		log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
 
 		switch command {
-		case "cd":
-			c.cwd(args)
-		case "ls":
+		case "open":
+			c.open(args)
+		case "list":
 			c.list(args)
 		case "port":
 			c.port(args)
