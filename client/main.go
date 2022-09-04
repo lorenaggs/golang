@@ -7,18 +7,12 @@ import (
 )
 
 func main() {
-	li, err := net.Listen("tcp", ":8080")
+
+	conn, err := net.Dial("tcp", "localhost:8080")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer li.Close()
+	defer conn.Close()
 
-	for {
-		conn, err := li.Accept()
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		fmt.Println(conn)
-	}
+	fmt.Println(conn, "open")
 }
