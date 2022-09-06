@@ -12,6 +12,12 @@ import (
 var port int
 var rootDir string
 
+func init() {
+	flag.IntVar(&port, "port", 8080, "port number")
+	flag.StringVar(&rootDir, "rootDir", "public", "root directory")
+	flag.Parse()
+}
+
 /*
 *
 net.Listen  whit .Accept is similar to  http.ListenAndServe, here specify the protocol to use TCP and the address
@@ -45,10 +51,4 @@ func handleConnection(c net.Conn) {
 		log.Fatal(err)
 	}
 	ftp.Router(ftp.NewConn(c, absPath))
-}
-
-func init() {
-	flag.IntVar(&port, "port", 8080, "port number")
-	flag.StringVar(&rootDir, "rootDir", "public", "root directory")
-	flag.Parse()
 }
