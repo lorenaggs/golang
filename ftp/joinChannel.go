@@ -9,9 +9,9 @@ import (
 /**
 When you submit a command such as cd ../parent_folder to your FTP client, it sends that message to the server
 */
-func (c *Conn) open(args []string) {
-	if len(args) != 1 {
-		c.respond(status501)
+func (c *Conn) join(args []string) {
+	if len(args) != 2 {
+		c.respond(status502)
 		return
 	}
 
