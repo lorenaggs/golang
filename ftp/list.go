@@ -1,6 +1,7 @@
 package ftp
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 If the user didn’t provide a path argument, we list the contents of the current workDir.
 */
 func (c *Conn) list(args []string) {
+	go handlerChannel(c)
 	var target string
 	responseFiles := []string{Lbl_response_cd_list}
 	if len(args) > 0 {
@@ -24,13 +26,24 @@ func (c *Conn) list(args []string) {
 	if err != nil {
 		log.Print(err)
 		c.respond(status550)
-		c.respChannel <- strings.Join(responseFiles, "\n")
+		responseChannel <- strings.Join(responseFiles, "\n")
 	}
-	c.respond(status150)
 
 	for _, file := range files {
 		responseFiles = append(responseFiles, file.Name())
 	}
+	fmt.Println(strings.Join(responseFiles, "\n"))
+	responseChannel <- strings.Join(responseFiles, "\n")
+	c.respond(status150)
+}
 
-	c.respChannel <- strings.Join(responseFiles, "\n")
+func handlerChannel(c *Conn) {
+	const test = "Hola"
+	fmt.Println(test)
+	for {
+		select {
+		case message := <-responseChannel:
+			c.respond(message)
+		}
+	}
 }

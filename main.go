@@ -45,11 +45,11 @@ every connection handle in its own gorutine, and clients not wait online to use 
 go handleConnection is our gorutine
 */
 func handleConnection(c net.Conn) {
-	var responseChannel = make(chan string)
+	//var responseChannel = make(chan string)
 	defer c.Close()
 	absPath, err := filepath.Abs(rootDir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	ftp.Router(ftp.NewConn(c, absPath, responseChannel))
+	ftp.Router(ftp.NewConn(c, absPath))
 }
