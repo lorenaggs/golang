@@ -1,7 +1,6 @@
 package ftp
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -27,7 +26,7 @@ func (c *Conn) list(args []string) {
 	}
 	c.respond(status150)
 
-	dataConn, err := c.dataConnect() // establish a second, temporary connection to the client,
+	/*dataConn, err := c.dataConnect() // establish a second, temporary connection to the client,
 	if err != nil {
 		log.Print(err)
 		c.respond(status425)
@@ -48,5 +47,5 @@ func (c *Conn) list(args []string) {
 		c.respond(status426)
 	}
 
-	c.respond(status226)
+	c.respond(status226)*/
 }

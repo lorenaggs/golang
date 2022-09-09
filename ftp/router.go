@@ -9,13 +9,21 @@ import (
 	"strings"
 )
 
-// Serve scans incoming requests for valid commands and routes them to handler functions.
-func Router(c *Conn) {
-	c.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
+const (
+	MaxBufferMb   = 10
+	MaxBufferByte = 10 * 1024 * 1024
+)
 
-	s := bufio.NewScanner(c.conn) //To listen for incoming commands,
-	for s.Scan() {
-		input := strings.Fields(s.Text())
+// Serve scans incoming requests for valid commands and routes them to handler functions.
+func Router(conn *Conn) {
+	conn.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
+
+	inputClient := bufio.NewScanner(conn.conn) //To listen for incoming commands,
+	buffer := make([]byte, MaxBufferByte)
+	inputClient.Buffer(buffer, MaxBufferByte)
+
+	for inputClient.Scan() {
+		input := strings.Fields(inputClient.Text())
 		if len(input) == 0 {
 			continue
 		}
@@ -25,25 +33,25 @@ func Router(c *Conn) {
 
 		switch command {
 		case "open":
-			c.open(args)
+			conn.open(args)
 		case "list":
-			c.list(args)
+			conn.list(args)
 		case "port":
-			c.port(args)
+			conn.port(args)
 		case "user":
-			c.user(args)
+			conn.user(args)
 		case "exit":
-			c.respond(status221)
+			conn.respond(status221)
 			return
-		case "retr": // get //the client secretly sends a port
-			c.retr(args)
+		case "send": // get //the client secretly sends a port
+			conn.retr(args)
 		case "typeof":
-			c.setDataType(args)
+			conn.setDataType(args)
 		default:
-			c.respond(status502)
+			conn.respond(status502)
 		}
 	}
-	if s.Err() != nil {
-		log.Print(s.Err())
+	if inputClient.Err() != nil {
+		log.Print(inputClient.Err())
 	}
 }
