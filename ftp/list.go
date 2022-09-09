@@ -1,9 +1,11 @@
 package ftp
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 /*
@@ -12,6 +14,7 @@ If the user didn’t provide a path argument, we list the contents of the curren
 */
 func (c *Conn) list(args []string) {
 	var target string
+	responseFiles := []string{"test"}
 	if len(args) > 0 {
 		target = filepath.Join(c.rootDir, c.workDir, args[0])
 	} else {
@@ -24,28 +27,11 @@ func (c *Conn) list(args []string) {
 		c.respond(status550)
 		return
 	}
-	c.respond(status150)
-
-	/*dataConn, err := c.dataConnect() // establish a second, temporary connection to the client,
-	if err != nil {
-		log.Print(err)
-		c.respond(status425)
-		return
-	}
-	defer dataConn.Close()
-
 	for _, file := range files {
-		_, err := fmt.Fprint(dataConn, file.Name(), c.EOL())
-		if err != nil {
-			log.Print(err)
-			c.respond(status426)
-		}
+		responseFiles = append(responseFiles, file.Name())
 	}
-	_, err = fmt.Fprintf(dataConn, c.EOL())
-	if err != nil {
-		log.Print(err)
-		c.respond(status426)
-	}
+	c.respond(status150)
+	c.respond(strings.Join(responseFiles, "\n"))
+	fmt.Println(files)
 
-	c.respond(status226)*/
 }
