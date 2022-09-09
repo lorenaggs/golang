@@ -14,7 +14,7 @@ If the user didn’t provide a path argument, we list the contents of the curren
 */
 func (c *Conn) list(args []string) {
 	var target string
-	responseFiles := []string{"test"}
+	responseFiles := []string{lbl_resp_list}
 	if len(args) > 0 {
 		target = filepath.Join(c.rootDir, c.workDir, args[0])
 	} else {
@@ -28,7 +28,7 @@ func (c *Conn) list(args []string) {
 		return
 	}
 	for _, file := range files {
-		responseFiles = append(responseFiles, file.Name())
+		responseFiles = append(responseFiles, " ❤ "+file.Name())
 	}
 	c.respond(status150)
 	c.respond(strings.Join(responseFiles, "\n"))

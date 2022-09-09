@@ -10,6 +10,7 @@ type Conn struct {
 	dataPort *dataPort // zero value nil
 	rootDir  string    //we specified for the server (the place where public files will live)
 	workDir  string    //the current working directory for the connection
+	dataUser *dataUser //handle information about user connection
 }
 
 // NewConn returns a new FTP connection

@@ -1,21 +1,32 @@
 package ftp
 
 import (
-	"log"
-	"os"
-	"path/filepath"
+	"fmt"
 )
 
 /**
-When you submit a command such as cd ../parent_folder to your FTP client, it sends that message to the server
+When you submit a command such as join
 */
-func (c *Conn) join(args []string) {
-	if len(args) != 2 {
-		c.respond(status502)
+func (c *Conn) joinChannel(args []string) {
+	if len(args) != 1 {
+		c.respond(status504)
 		return
 	}
 
-	workDir := filepath.Join(c.workDir, args[0])
+	filtered := Filter(ChannelsAvailable, func(ch string) bool {
+		return ch == args[0]
+	})
+
+	if len(filtered) != 1 {
+		c.respond(fmt.Sprintf(status503, args[0]))
+		return
+	}
+
+	fmt.Println(c.conn.RemoteAddr().String())
+	c.dataUser = SetUser(c.conn.RemoteAddr().String(), args[0])
+
+	//c.dataUser = dataUser
+	/*workDir := filepath.Join(c.workDir, args[0])
 	absPath := filepath.Join(c.rootDir, workDir)
 	_, err := os.Stat(absPath)
 	if err != nil {
@@ -23,6 +34,6 @@ func (c *Conn) join(args []string) {
 		c.respond(status550)
 		return
 	}
-	c.workDir = workDir
+	c.workDir = workDir*/
 	c.respond(status200)
 }
