@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 /*
@@ -12,6 +13,7 @@ If the user didn’t provide a path argument, we list the contents of the curren
 */
 func (c *Conn) list(args []string) {
 	var target string
+	responseFiles := []string{Lbl_response_cd_list}
 	if len(args) > 0 {
 		target = filepath.Join(c.rootDir, c.workDir, args[0])
 	} else {
@@ -22,30 +24,13 @@ func (c *Conn) list(args []string) {
 	if err != nil {
 		log.Print(err)
 		c.respond(status550)
-		return
+		c.respChannel <- strings.Join(responseFiles, "\n")
 	}
 	c.respond(status150)
 
-	/*dataConn, err := c.dataConnect() // establish a second, temporary connection to the client,
-	if err != nil {
-		log.Print(err)
-		c.respond(status425)
-		return
-	}
-	defer dataConn.Close()
-
 	for _, file := range files {
-		_, err := fmt.Fprint(dataConn, file.Name(), c.EOL())
-		if err != nil {
-			log.Print(err)
-			c.respond(status426)
-		}
-	}
-	_, err = fmt.Fprintf(dataConn, c.EOL())
-	if err != nil {
-		log.Print(err)
-		c.respond(status426)
+		responseFiles = append(responseFiles, file.Name())
 	}
 
-	c.respond(status226)*/
+	c.respChannel <- strings.Join(responseFiles, "\n")
 }

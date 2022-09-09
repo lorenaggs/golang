@@ -20,6 +20,15 @@ const (
 	status550 = "550 Requested action not taken. File unavailable."
 )
 
+const (
+	Lbl_response_cd_list = "files founded :"
+)
+
+const (
+	MaxBufferMb   = 10
+	MaxBufferByte = 10 * 1024 * 1024
+)
+
 /*
 We EXTEND ftp.Conn with the method respond. respond takes a string, logs it,
 and then copies it to its underlying net.Conn, which does the dirty work of sending the data to the client.

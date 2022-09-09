@@ -9,11 +9,6 @@ import (
 	"strings"
 )
 
-const (
-	MaxBufferMb   = 10
-	MaxBufferByte = 10 * 1024 * 1024
-)
-
 // Serve scans incoming requests for valid commands and routes them to handler functions.
 func Router(conn *Conn) {
 	conn.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
