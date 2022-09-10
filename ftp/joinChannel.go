@@ -37,3 +37,11 @@ func (c *Conn) joinChannel(args []string) {
 	c.workDir = workDir*/
 	c.respond(status200)
 }
+
+func (c *Conn) hasUserChannel() bool {
+	if c.dataUser == nil {
+		c.respond(status503)
+		c.respond(lbl_question_channles)
+	}
+	return c.dataUser != nil
+}

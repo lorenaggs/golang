@@ -45,7 +45,7 @@ func (c *Conn) respond(s string) {
 func (c *Conn) printChannels() {
 	resp := []string{lbl_question_channles}
 	for _, channel := range ChannelsAvailable {
-		resp = append(resp, " * "+channel)
+		resp = append(resp, "■ "+channel)
 	}
 	c.respond(strings.Join(resp, "\n"))
 }

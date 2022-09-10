@@ -18,6 +18,7 @@ const (
 func Router(conn *Conn) {
 	conn.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
 	conn.printChannels()
+
 	inputClient := bufio.NewScanner(conn.conn) //To listen for incoming commands,
 	buffer := make([]byte, MaxBufferByte)
 	inputClient.Buffer(buffer, MaxBufferByte)
@@ -25,6 +26,9 @@ func Router(conn *Conn) {
 	for inputClient.Scan() {
 		input := strings.Fields(inputClient.Text())
 		if len(input) == 0 {
+			continue
+		}
+		if !conn.hasUserChannel() {
 			continue
 		}
 		command, args := input[0], input[1:]  // you can see exactly what the client is sending
