@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/lorenaggs/golang/ftp"
+	"github.com/lorenaggs/golang/server/ftp"
 	log "github.com/sirupsen/logrus"
 	"net"
 	"path/filepath"
