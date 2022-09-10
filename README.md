@@ -1,10 +1,10 @@
 # 
+--como descargar el proyecto
 --  intro
 -- comandos
 -- capturas de pantalla comandos 
 
 
---como descargar el proyecto
 --como configurar go (opcional)
 
 
