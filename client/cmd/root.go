@@ -3,8 +3,8 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/lorenaggs/golang/client/ftp"
 	log "github.com/sirupsen/logrus"
+	"io"
 	"net"
 	"os"
 )
@@ -16,14 +16,16 @@ func Execute() {
 	logger.Info("Client is Ready")
 	conn, err := net.Dial("tcp", "localhost:8080")
 	if err != nil {
+		fmt.Errorf("ERROR")
 		log.Fatal(err)
+		return
 	}
 	defer conn.Close()
 
-	ftp.NewConn(conn)
+	//ftp.NewConn(conn)
 	responseServer := make(chan string)
 	for {
-		go getResponseServer(conn, responseServer)
+		//go getResponseServer(conn, responseServer)
 		go sendDataServer(conn)
 		response := <-responseServer
 		logger.Info(response)
@@ -31,11 +33,24 @@ func Execute() {
 }
 
 func getResponseServer(conn net.Conn, chIn chan<- string) {
-	message, err := bufio.NewReaderSize(conn, 20999999).ReadString('|')
+	buf := make([]byte, 0, 4096) // big buffer
+	tmp := make([]byte, 2556)    // using small tmo buffer for demonstrating
+	n, err := conn.Read(tmp)
 	if err != nil {
-		log.Fatal(err)
+		if err != io.EOF {
+			fmt.Println("read error:", err)
+		}
+		return
 	}
-	chIn <- message
+	//fmt.Println("got", n, "bytes.")
+	buf = append(buf, tmp[:n]...)
+	fmt.Println("total size:", len(buf))
+	fmt.Println("SERVER -->:", string(buf))
+	/*	message, err := bufio.NewReaderSize(conn, controllers.MAX_BUFFER).ReadString('#')
+		if err != nil {
+			log.Error(err)
+		}
+		chIn <- message*/
 }
 
 func sendDataServer(conn net.Conn) {

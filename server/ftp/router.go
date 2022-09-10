@@ -18,7 +18,6 @@ const (
 func Router(conn *Conn) {
 	conn.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
 	conn.printChannels()
-
 	inputClient := bufio.NewScanner(conn.conn) //To listen for incoming commands,
 	buffer := make([]byte, MaxBufferByte)
 	inputClient.Buffer(buffer, MaxBufferByte)
