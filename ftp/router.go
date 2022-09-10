@@ -28,12 +28,12 @@ func Router(conn *Conn) {
 		if len(input) == 0 {
 			continue
 		}
-		if !conn.hasUserChannel() {
-			continue
-		}
+
 		command, args := input[0], input[1:]  // you can see exactly what the client is sending
 		log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
-
+		if command != "join" && !conn.hasUserChannel() {
+			continue
+		}
 		switch command {
 		case "join":
 			conn.joinChannel(args)

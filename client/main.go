@@ -23,7 +23,7 @@ func main() {
 	done := make(chan struct{})
 	go func() {
 		io.Copy(os.Stdout, conn) // NOTE: ignoring errors
-		log.Println("done :::: ")
+		log.Println("conecction closed :::: ")
 		done <- struct{}{} // signal the main goroutine
 	}()
 	mustCopy(conn, os.Stdin)

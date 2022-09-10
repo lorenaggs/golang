@@ -2,6 +2,8 @@ package ftp
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 )
 
 /**
@@ -12,36 +14,35 @@ func (c *Conn) joinChannel(args []string) {
 		c.respond(status504)
 		return
 	}
+	channel := args[0]
 
 	filtered := Filter(ChannelsAvailable, func(ch string) bool {
-		return ch == args[0]
+		return ch == channel
 	})
 
 	if len(filtered) != 1 {
-		c.respond(fmt.Sprintf(status503, args[0]))
+		c.respond(fmt.Sprintf(status503, channel))
 		return
 	}
 
 	fmt.Println(c.conn.RemoteAddr().String())
-	c.dataUser = SetUser(c.conn.RemoteAddr().String(), args[0])
-
-	//c.dataUser = dataUser
-	/*workDir := filepath.Join(c.workDir, args[0])
-	absPath := filepath.Join(c.rootDir, workDir)
-	_, err := os.Stat(absPath)
-	if err != nil {
-		log.Print(err)
-		c.respond(status550)
-		return
-	}
-	c.workDir = workDir*/
+	c.dataUser = SetUser(c.conn.RemoteAddr().String(), channel)
+	c.createFolder(channel)
 	c.respond(status200)
 }
 
 func (c *Conn) hasUserChannel() bool {
 	if c.dataUser == nil {
-		c.respond(status503)
+		c.respond(fmt.Sprintf(status503, ""))
 		c.respond(lbl_question_channles)
 	}
 	return c.dataUser != nil
+}
+
+func (c *Conn) createFolder(channel string) {
+	path := filepath.Join(c.rootDir, c.workDir, channel)
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		c.respond(err.Error())
+		return
+	}
 }
