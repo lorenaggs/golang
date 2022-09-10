@@ -1,8 +1,8 @@
 package ftp
 
 import (
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -16,21 +16,21 @@ func (c *Conn) retr(args []string) {
 	path := filepath.Join(c.rootDir, c.workDir, args[0])
 	file, err := os.Open(path)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		c.respond(status550)
 	}
 	c.respond(status150)
 
 	dataConn, err := c.dataConnect()
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		c.respond(status425)
 	}
 	defer dataConn.Close()
 
 	_, err = io.Copy(dataConn, file)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		c.respond(status426)
 		return
 	}

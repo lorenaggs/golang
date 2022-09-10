@@ -1,8 +1,8 @@
 package main
 
 import (
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"net"
 	"os"
 )
@@ -15,15 +15,18 @@ ch <- x 	// a send statement
 	result chan <- int 	(Param fn)
 <-ch 		// a receive statement; result is discarded
 */
+
 func main() {
+
 	conn, err := net.Dial("tcp", "localhost:8080")
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	done := make(chan struct{})
 	go func() {
 		io.Copy(os.Stdout, conn) // NOTE: ignoring errors
-		log.Println("conecction closed :::: ")
+		log.Infof("conecction closed :::: ")
 		done <- struct{}{} // signal the main goroutine
 	}()
 	mustCopy(conn, os.Stdin)

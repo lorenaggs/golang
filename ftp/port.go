@@ -1,6 +1,6 @@
 package ftp
 
-import "log"
+import log "github.com/sirupsen/logrus"
 
 func (c *Conn) port(args []string) {
 	if len(args) != 1 {
@@ -9,7 +9,7 @@ func (c *Conn) port(args []string) {
 	}
 	dataPort, err := dataPortFromHostPort(args[0])
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		c.respond(status501)
 		return
 	}

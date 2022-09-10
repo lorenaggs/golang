@@ -2,7 +2,7 @@ package ftp
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -35,17 +35,17 @@ The only thing to watch out for here is the call to c.EOL, which addresses a qui
 */
 // respond copies a string to the client and terminates it with the appropriate FTP line terminator for the datatype.
 func (c *Conn) respond(s string) {
-	log.Print(">> ", s)
+	//log.Info(">> :: ", s)
 	_, err := fmt.Fprint(c.conn, s, c.EOL())
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 	}
 }
 
 func (c *Conn) printChannels() {
 	resp := []string{lbl_question_channles}
 	for _, channel := range ChannelsAvailable {
-		resp = append(resp, "■ "+channel)
+		resp = append(resp, " ■ "+channel)
 	}
 	c.respond(strings.Join(resp, "\n"))
 }

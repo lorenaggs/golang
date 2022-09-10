@@ -5,7 +5,7 @@ package ftp
 //and matches them against the FTP routines that the server implements.
 import (
 	"bufio"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -29,9 +29,16 @@ func Router(conn *Conn) {
 			continue
 		}
 
-		command, args := input[0], input[1:]  // you can see exactly what the client is sending
-		log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
+		command, args := input[0], input[1:] // you can see exactly what the client is sending
+		log.WithFields(log.Fields{
+			"args":    args,
+			"command": command,
+		}).Warn("The client is sending!")
+
+		//log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
 		if command != "join" && !conn.hasUserChannel() {
+			log.Error("Client doesn't send command JOIN.")
+			// Calls os.Exit(1) after logging
 			continue
 		}
 		switch command {
@@ -55,6 +62,6 @@ func Router(conn *Conn) {
 		}
 	}
 	if inputClient.Err() != nil {
-		log.Print(inputClient.Err())
+		log.Error(inputClient.Err())
 	}
 }

@@ -24,9 +24,7 @@ func (c *Conn) joinChannel(args []string) {
 		c.respond(fmt.Sprintf(status503, channel))
 		return
 	}
-
-	fmt.Println(c.conn.RemoteAddr().String())
-	c.dataUser = SetUser(c.conn.RemoteAddr().String(), channel)
+	c.dataUser = SetUser(c.conn, c.conn.RemoteAddr().String(), channel)
 	c.createFolder(channel)
 	c.respond(status200)
 }

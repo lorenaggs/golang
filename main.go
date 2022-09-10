@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/lorenaggs/golang/ftp"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"path/filepath"
 )
@@ -16,6 +16,10 @@ func init() {
 	flag.IntVar(&port, "port", 8080, "port number")
 	flag.StringVar(&rootDir, "rootDir", "public", "root directory")
 	flag.Parse()
+	log.SetFormatter(&log.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
 }
 
 /*
@@ -23,6 +27,10 @@ func init() {
 net.Listen  whit .Accept is similar to  http.ListenAndServe, here specify the protocol to use TCP and the address
 */
 func main() {
+	logger := log.WithFields(log.Fields{
+		"function": "main",
+	})
+	logger.Info("Server is Ready")
 	server := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", server)
 	if err != nil {
@@ -31,7 +39,7 @@ func main() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Print(err)
+			log.Error(err)
 		}
 		go handleConnection(conn)
 	}

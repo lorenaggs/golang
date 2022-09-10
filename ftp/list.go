@@ -1,9 +1,8 @@
 package ftp
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 	"strings"
 )
@@ -23,7 +22,7 @@ func (c *Conn) list(args []string) {
 
 	files, err := ioutil.ReadDir(target) // returns each file in a directory
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		c.respond(status550)
 		return
 	}
@@ -32,6 +31,5 @@ func (c *Conn) list(args []string) {
 	}
 	c.respond(status150)
 	c.respond(strings.Join(responseFiles, "\n"))
-	fmt.Println(files)
 
 }
