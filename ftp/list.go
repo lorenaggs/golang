@@ -35,16 +35,6 @@ func (c *Conn) list(args []string) {
 	}
 	fmt.Println(strings.Join(responseFiles, "\n"))
 	responseChannel <- strings.Join(responseFiles, "\n")
-	c.respond(status150)
-}
 
-func handlerChannel(c *Conn) {
-	const test = "Hola"
-	fmt.Println(test)
-	for {
-		select {
-		case message := <-responseChannel:
-			c.respond(message)
-		}
-	}
+	c.respond(status150)
 }
