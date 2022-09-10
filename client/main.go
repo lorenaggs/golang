@@ -1,45 +1,51 @@
 package main
 
 import (
-	"io"
-	"log"
+	"bufio"
+	"fmt"
+	"github.com/paugarrocho/ChallengeFileServerGo/client/controllers"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"os"
 )
 
-/*
-
-x = <-ch 	// a receive expression in an assignment statement
-	job <- chan int  	(Param fn )
-ch <- x 	// a send statement
-	result chan <- int 	(Param fn)
-<-ch 		// a receive statement; result is discarded
-*/
 func main() {
+	logger := log.WithFields(log.Fields{
+		"function": "main",
+	})
+	logger.Info("Client is Ready")
 	conn, err := net.Dial("tcp", "localhost:8080")
 	if err != nil {
+		fmt.Errorf("ERROR")
 		log.Fatal(err)
+		return
 	}
+	defer conn.Close()
 
+	//ftp.NewConn(conn)
+	responseServer := make(chan string)
 	for {
-		done := make(chan struct{})
-		go func() {
-			io.Copy(os.Stdout, conn) // NOTE: ignoring errors
-			log.Println("done :::: ")
-			done <- struct{}{} // signal the main goroutine
-		}()
-		io.Copy(conn, os.Stdin)
-
-		//mustCopy(conn, os.Stdin)
-		conn.Close()
-
+		go getResponseServer(conn, responseServer)
+		go sendDataServer(conn)
+		response := <-responseServer
+		logger.Info(response)
 	}
 }
 
-//!-
+func getResponseServer(conn net.Conn, chIn chan<- string) {
+	message, err := bufio.NewReaderSize(conn, controllers.MAX_BUFFER).ReadString('#')
+	if err != nil {
+		log.Error(err)
+	}
+	chIn <- message
+}
 
-func mustCopy(dst io.Writer, src io.Reader) {
-	if _, err := io.Copy(dst, src); err != nil {
-		log.Fatal(err)
+func sendDataServer(conn net.Conn) {
+	reader := bufio.NewReader(os.Stdin)
+	// ReadString will block until the delimiter is entered
+	input, err := reader.ReadString('\n')
+	_, err = fmt.Fprint(conn, input)
+	if err != nil {
+		log.Error(err)
 	}
 }

@@ -12,6 +12,7 @@ import (
 *
 If the user didn’t provide a path argument, we list the contents of the current workDir.
 */
+
 func (c *Conn) list(args []string) {
 	go handlerChannel(c)
 	var target string
