@@ -8,6 +8,7 @@ import (
 const (
 	status150 = "150 File status okay; about to open data connection."
 	status200 = "200 Command okay."
+	status204 = "204 Update okay."
 	status220 = "220 Service ready for new user. Please Join into a CHANNEL"
 	status221 = "221 Service closing control connection."
 	status226 = "226 Closing data connection. Requested file action successful."
@@ -20,6 +21,7 @@ const (
 	status504 = "504 Command not implemented for that parameter."
 	status550 = "550 Requested action not taken. File unavailable."
 )
+
 const (
 	lbl_resp_list         = "Files founded :"
 	lbl_question_channles = "List of available channels, please select one : eg: join ch1"

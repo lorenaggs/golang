@@ -30,7 +30,7 @@ func main() {
 	logger := log.WithFields(log.Fields{
 		"function": "main",
 	})
-	logger.Info("Server is Ready :: 2022")
+	logger.Info("Server is Ready")
 	server := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", server)
 	if err != nil {

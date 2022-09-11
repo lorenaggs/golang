@@ -6,7 +6,8 @@ import (
 	"path/filepath"
 )
 
-/**
+/*
+*
 When you submit a command such as join
 */
 func (c *Conn) joinChannel(args []string) {
@@ -28,9 +29,20 @@ func (c *Conn) joinChannel(args []string) {
 
 }
 func createFolder(c *Conn, channel string) {
+	var responseMessage = status200
+	if c.dataUser != nil {
+		responseMessage = status204
+	}
+
 	c.dataUser = SetUser(c.conn, c.conn.RemoteAddr().String(), channel)
-	c.createFolder(channel)
-	c.respond(status200)
+	c.usersConnected = append(c.usersConnected, c.dataUser)
+
+	path := filepath.Join(c.rootDir, c.workDir, channel)
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		c.respond(err.Error())
+		return
+	}
+	c.respond(responseMessage)
 }
 
 func (c *Conn) hasUserChannel() bool {
@@ -38,12 +50,4 @@ func (c *Conn) hasUserChannel() bool {
 		c.respond(lbl_question_channles)
 	}
 	return c.dataUser != nil
-}
-
-func (c *Conn) createFolder(channel string) {
-	path := filepath.Join(c.rootDir, c.workDir, channel)
-	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		c.respond(err.Error())
-		return
-	}
 }
