@@ -16,14 +16,18 @@ func (c *Conn) joinChannel(args []string) {
 	}
 	channel := args[0]
 
-	filtered := Filter(ChannelsAvailable, func(ch string) bool {
+	isValid := Filter(ChannelsAvailable, func(ch string) bool {
 		return ch == channel
 	})
 
-	if len(filtered) != 1 {
+	if len(isValid) != 1 {
 		c.respond(fmt.Sprintf(status503, channel))
 		return
 	}
+	createFolder(c, channel)
+
+}
+func createFolder(c *Conn, channel string) {
 	c.dataUser = SetUser(c.conn, c.conn.RemoteAddr().String(), channel)
 	c.createFolder(channel)
 	c.respond(status200)
@@ -31,7 +35,6 @@ func (c *Conn) joinChannel(args []string) {
 
 func (c *Conn) hasUserChannel() bool {
 	if c.dataUser == nil {
-		c.respond(fmt.Sprintf(status503, ""))
 		c.respond(lbl_question_channles)
 	}
 	return c.dataUser != nil

@@ -27,9 +27,8 @@ func (c *Conn) list(args []string) {
 		return
 	}
 	for _, file := range files {
-		responseFiles = append(responseFiles, " ❤ "+file.Name())
+		responseFiles = append(responseFiles, " -> "+file.Name())
 	}
-	c.respond(status150)
-	c.respond(strings.Join(responseFiles, "\n"))
+	c.respond(strings.Join(responseFiles, " : "))
 
 }

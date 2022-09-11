@@ -1,14 +1,7 @@
 package ftp
 
-import (
-	log "github.com/sirupsen/logrus"
-	"io"
-	"os"
-	"path/filepath"
-)
-
 func (c *Conn) retr(args []string) {
-	if len(args) != 1 {
+	/*if len(args) != 1 {
 		c.respond(status501)
 		return
 	}
@@ -35,5 +28,5 @@ func (c *Conn) retr(args []string) {
 		return
 	}
 	io.WriteString(dataConn, c.EOL())
-	c.respond(status226)
+	c.respond(status226)*/
 }

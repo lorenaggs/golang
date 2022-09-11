@@ -16,8 +16,7 @@ const (
 
 // Serve scans incoming requests for valid commands and routes them to handler functions.
 func Router(conn *Conn) {
-	conn.respond(status220) //The first thing we do upon entering Serve is to issue a 220 response to the client,
-	conn.printChannels()
+	conn.respond(status220)                    //The first thing we do upon entering Serve is to issue a 220 response to the client,
 	inputClient := bufio.NewScanner(conn.conn) //To listen for incoming commands,
 	buffer := make([]byte, MaxBufferByte)
 	inputClient.Buffer(buffer, MaxBufferByte)
@@ -35,13 +34,12 @@ func Router(conn *Conn) {
 		}).Warn("The client is sending!")
 
 		//log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
-		if command != "join" && !conn.hasUserChannel() {
+		if command != "join" && command != "channel" && !conn.hasUserChannel() {
 			log.Error("Client doesn't send command JOIN.")
-			// Calls os.Exit(1) after logging
 			continue
 		}
 		switch command {
-		case "join":
+		case "subs":
 			conn.joinChannel(args)
 		case "list":
 			conn.list(args)
@@ -56,6 +54,8 @@ func Router(conn *Conn) {
 			conn.retr(args)
 		case "typeof":
 			conn.setDataType(args)
+		case "chan":
+			conn.printChannels()
 		default:
 			conn.respond(status502)
 		}

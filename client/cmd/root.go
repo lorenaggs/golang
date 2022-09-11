@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"io"
 	"net"
 	"os"
 )
@@ -21,36 +20,26 @@ func Execute() {
 		return
 	}
 	defer conn.Close()
-
 	//ftp.NewConn(conn)
 	responseServer := make(chan string)
+
+	fmt.Printf("Commands accepted: \n channel \n join  \n\n\n")
 	for {
-		//go getResponseServer(conn, responseServer)
+		msg := getResponseServer(conn, responseServer)
 		go sendDataServer(conn)
-		response := <-responseServer
-		logger.Info(response)
+		fmt.Println(msg)
+		/*response := <-responseServer
+		logger.Info(response)*/
 	}
+
 }
 
-func getResponseServer(conn net.Conn, chIn chan<- string) {
-	buf := make([]byte, 0, 4096) // big buffer
-	tmp := make([]byte, 2556)    // using small tmo buffer for demonstrating
-	n, err := conn.Read(tmp)
+func getResponseServer(conn net.Conn, chIn chan<- string) string {
+	msg, err := bufio.NewReader(conn).ReadBytes('\n')
 	if err != nil {
-		if err != io.EOF {
-			fmt.Println("read error:", err)
-		}
-		return
+		return err.Error()
 	}
-	//fmt.Println("got", n, "bytes.")
-	buf = append(buf, tmp[:n]...)
-	fmt.Println("total size:", len(buf))
-	fmt.Println("SERVER -->:", string(buf))
-	/*	message, err := bufio.NewReaderSize(conn, controllers.MAX_BUFFER).ReadString('#')
-		if err != nil {
-			log.Error(err)
-		}
-		chIn <- message*/
+	return string(msg)
 }
 
 func sendDataServer(conn net.Conn) {
