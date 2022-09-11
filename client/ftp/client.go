@@ -3,6 +3,7 @@ package ftp
 import (
 	"bufio"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
@@ -26,28 +27,18 @@ func NewConn(conn net.Conn, rootDir string) *Client {
 	}
 }
 
-func (c *Client) readChannel() bool {
+func (c *Client) read() {
 	for {
-		test := make(chan string)
-		go GetResponseServer(c.conn, test)
-		go SendDataServer(c.conn)
-
-		msg := <-test
+		response := make(chan string)
+		go GetResponseServer(c.conn, response)
+		msg := <-response
 		//this response is important to get after login user
 		log.Info(msg)
-		if strings.TrimSpace(msg) == "# 200 Command okay." {
-			return true
-		}
 	}
-	return false
 }
 
-func (c *Client) SendFile() {
+func (c *Client) SendFile(input string) {
 	for {
-		reader := bufio.NewReader(os.Stdin)
-		// ReadString will block until the delimiter is entered
-		input, _ := reader.ReadString('\n')
-		//input, err := reader.ReadString('\n')
 		channelPath := strings.Fields(input)
 		if len(channelPath) < 2 {
 			continue
@@ -64,19 +55,21 @@ func (c *Client) SendFile() {
 		}
 
 		//tranform byte to string
-		base64File(filePath)
+		fileBase64, fileName, err := base64File(filePath)
+		if err != nil {
+			continue
+		}
 
-		//command := fmt.Sprintf("%s %s", send, channel)
-
-		//fmt.Println(command)
-		//_, err = c.conn.Write([]byte(command))
-		//if err != nil {
-		//	log.Error(err)
-		//}
+		command := fmt.Sprintf("%s %s %s %s", send, channel, fileBase64, fileName)
+		fmt.Println(command)
+		_, err = c.conn.Write([]byte(command))
+		if err != nil {
+			log.Error(err)
+		}
 	}
 }
 
-func base64File(filePath string) (string, error) {
+func base64File(filePath string) (string, string, error) {
 	fileOpen, err := os.Open(filePath)
 	if err != nil {
 		log.Errorf("Error open file  %s \n", filePath)
@@ -84,17 +77,29 @@ func base64File(filePath string) (string, error) {
 	defer fileOpen.Close()
 	reader := bufio.NewReaderSize(fileOpen, MaxBufferByte)
 	fileByte, err := io.ReadAll(reader)
-	fmt.Println(fileByte)
+	log.Debug(fileByte)
 	if err != nil {
 		log.Error("Error reading file", err.Error())
+		return "", "", err
+	}
+	fileInfo, err := fileOpen.Stat()
+	if err != nil {
+		log.Error("Error reading file", err.Error())
+		return "", "", err
 	}
 	if len(fileByte) > MaxBufferByte {
 		log.Errorf("%s File is higher that permited %d \n", filePath, MaxBufferMb)
+		err = errors.New("File is higher that permited ")
+		return "", "", err
 	}
 	fileBase64 := base64.StdEncoding.EncodeToString(fileByte)
-	fmt.Println(fileBase64)
-
-	return "", nil
+	logger := log.WithFields(log.Fields{
+		"function":     "base64File",
+		"len-fileByte": len(fileByte),
+		"fileInfo":     fileInfo.Size(),
+	})
+	logger.Debug("file information")
+	return fileBase64, fileInfo.Name(), nil
 }
 func createFolder(c *Client, channel string) {
 	path := filepath.Join(c.rootDir, c.workDir, c.conn.RemoteAddr().String(), channel)

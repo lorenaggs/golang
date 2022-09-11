@@ -31,11 +31,11 @@ func Router(conn *Conn) {
 		log.WithFields(log.Fields{
 			"args":    args,
 			"command": command,
-		}).Warn("The client is sending!")
+		}).Info("The client is sending!")
 
 		//log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
 		if command != "join" && command != "chan" && !conn.hasUserChannel() {
-			log.Error("Client doesn't send command JOIN.")
+			log.Warn("Client doesn't send command JOIN.")
 			continue
 		}
 		switch command {

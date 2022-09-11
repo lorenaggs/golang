@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func GetResponseServer(conn net.Conn, test chan string) {
+func GetResponseServer(conn net.Conn, response chan string) {
 	msg, err := bufio.NewReader(conn).ReadBytes('\n')
 	if err != nil {
 		return
@@ -21,7 +21,7 @@ func GetResponseServer(conn net.Conn, test chan string) {
 	if err != nil {
 		return
 	}
-	test <- string(msg)
+	response <- string(msg)
 }
 
 func SendDataServer(conn net.Conn) {
