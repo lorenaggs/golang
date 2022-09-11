@@ -2,8 +2,6 @@ package ftp
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 )
 
 /*
@@ -25,23 +23,17 @@ func (c *Conn) joinChannel(args []string) {
 		c.respond(fmt.Sprintf(status503, channel))
 		return
 	}
-	createFolder(c, channel)
+	addUser(c, channel)
 
 }
-func createFolder(c *Conn, channel string) {
+func addUser(c *Conn, channel string) {
 	var responseMessage = status200
 	if c.dataUser != nil {
 		responseMessage = status204
 	}
 
 	c.dataUser = SetUser(c.conn, c.conn.RemoteAddr().String(), channel)
-	c.usersConnected = append(c.usersConnected, c.dataUser)
-
-	path := filepath.Join(c.rootDir, c.workDir, channel)
-	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		c.respond(err.Error())
-		return
-	}
+	UsersConnected = append(UsersConnected, c.dataUser)
 	c.respond(responseMessage)
 }
 

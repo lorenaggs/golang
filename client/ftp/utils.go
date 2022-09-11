@@ -9,22 +9,23 @@ import (
 	"os"
 )
 
-func GetResponseServer(conn net.Conn) (string, error) {
+func GetResponseServer(conn net.Conn, test chan string) {
 	msg, err := bufio.NewReader(conn).ReadBytes('\n')
 	if err != nil {
-		return "", err
+		return
 	}
 	if err == io.EOF {
-		return "", nil
+		return
 	}
 
 	if err != nil {
-		return "", err
+		return
 	}
-	return string(msg), nil
+	test <- string(msg)
 }
 
 func SendDataServer(conn net.Conn) {
+	log.Debug("Ingresa SendDataServer")
 	reader := bufio.NewReader(os.Stdin)
 	// ReadString will block until the delimiter is entered
 	input, err := reader.ReadString('\n')

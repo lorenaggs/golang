@@ -22,10 +22,7 @@ func init() {
 	})
 }
 
-/*
-*
-net.Listen  whit .Accept is similar to  http.ListenAndServe, here specify the protocol to use TCP and the address
-*/
+// net.Listen  whit .Accept is similar to  http.ListenAndServe, here specify the protocol to use TCP and the address
 func main() {
 	logger := log.WithFields(log.Fields{
 		"function": "main",
@@ -45,13 +42,9 @@ func main() {
 	}
 }
 
-/*
-*
-handleConnection is our FTP connection, our concurrent FTP server,
-every connection handle in its own gorutine, and clients not wait online to use the server
-
-go handleConnection is our gorutine
-*/
+// handleConnection is our FTP connection, our concurrent FTP server,
+// every connection handle in its own gorutine, and clients not wait online to use the server
+// go handleConnection is our gorutine
 func handleConnection(c net.Conn) {
 	defer c.Close()
 	absPath, err := filepath.Abs(rootDir)

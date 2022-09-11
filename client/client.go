@@ -1,39 +1,45 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/lorenaggs/golang/client/ftp"
 	log "github.com/sirupsen/logrus"
 	"net"
 )
 
+var host string
+var port int
+var rootDir string
+
+func init() {
+	flag.StringVar(&host, "host", "localhost", "port number")
+	flag.IntVar(&port, "port", 8080, "port number")
+	flag.StringVar(&rootDir, "rootDir", ".", "root directory")
+	flag.Parse()
+	log.SetFormatter(&log.TextFormatter{})
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.DebugLevel)
+}
 func main() {
+	fmt.Printf(rootDir)
 	logger := log.WithFields(log.Fields{
 		"function": "main",
 	})
-	logger.Info("Client is Ready")
-	conn, err := net.Dial("tcp", "localhost:8080")
+	logger.Debug("Client is Ready")
+	server := fmt.Sprintf("%s:%d", host, port)
+	conn, err := net.Dial("tcp", server)
 	if err != nil {
 		fmt.Errorf("ERROR")
 		log.Fatal(err)
 		return
 	}
 	defer conn.Close()
-	handleConnections(conn)
-	/*for {
-		msg, err := ftp.GetResponseServer(conn)
-		go ftp.SendDataServer(conn)
-		fmt.Println(msg)
-		if strings.TrimSpace(msg) == "# 200 Command okay." {
-			break
-		}
-		if err != nil {
-			break
-		}
-	}*/
+	handleConnections(conn, rootDir)
 
 }
 
-func handleConnections(c net.Conn) {
-	ftp.Router(ftp.NewConn(c))
+func handleConnections(c net.Conn, rootDir string) {
+	ftp.Router(ftp.NewConn(c, rootDir))
 }
