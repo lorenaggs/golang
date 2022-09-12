@@ -9,6 +9,9 @@ import (
 )
 
 func Router(c *Client) {
+	go func() {
+		c.read()
+	}()
 	log.Warn("Please, first join into a channel, eg : join ch1")
 	const menu = "\n\n M E N U: (select an option eg: join ch1) \n\n " +
 		"join [ARG]\t\t\t\tSubscribe into another channel.  \n " +
@@ -17,17 +20,14 @@ func Router(c *Client) {
 		"exit\t\t\t\t\tClose connection\n\n\n"
 	fmt.Println(menu)
 	reader := bufio.NewReader(os.Stdin)
-	go func() {
-		c.read()
-	}()
+
 	for {
-		fmt.Print("$ ")
 		input, err := reader.ReadString('\n')
 		if len(input) == 0 {
 			continue
 		}
 		log.Debug(strings.Contains(input, join))
-		if strings.Contains(input, join) {
+		if strings.Contains(input, send) {
 			c.SendFile(input)
 			continue
 		}

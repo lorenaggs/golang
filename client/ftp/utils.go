@@ -15,7 +15,7 @@ func GetResponseServer(conn net.Conn, response chan string) {
 		return
 	}
 	if err == io.EOF {
-		return
+		panic("GetResponseServer >>>>>>> EOF")
 	}
 
 	if err != nil {

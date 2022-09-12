@@ -38,35 +38,45 @@ func (c *Client) read() {
 }
 
 func (c *Client) SendFile(input string) {
-	for {
-		channelPath := strings.Fields(input)
-		if len(channelPath) < 2 {
-			continue
-		}
-
-		//channel, filePath := channelPath[0], channelPath[1]
-		_, filePath := channelPath[0], channelPath[1]
-		_, error := os.Stat(filePath) //validate if file exist
-
-		// check if error is "file not exists"
-		if os.IsNotExist(error) {
-			log.Errorf("%s File does not exist. send again eg: ch1 /user/home/photo.png \n", filePath)
-			continue
-		}
-
-		//tranform byte to string
-		fileBase64, fileName, err := base64File(filePath)
-		if err != nil {
-			continue
-		}
-
-		command := fmt.Sprintf("%s %s %s %s", send, channel, fileBase64, fileName)
-		fmt.Println(command)
-		_, err = c.conn.Write([]byte(command))
-		if err != nil {
-			log.Error(err)
-		}
+	sendCommand := strings.Fields(input)
+	if len(sendCommand) == 1 {
+		log.Error("Command Invalid, eg: send [channel] [path file]")
+		return
 	}
+	//send /folde/file.txt
+	//send ch1 /folde/file.txt
+	var channel, filePath string
+	_, channelPath := sendCommand[0], sendCommand[1:]
+	log.Debug(channelPath)
+	filePath = channelPath[0]
+	if len(channelPath) == 2 {
+		channel, filePath = channelPath[0], channelPath[1]
+	}
+	if channel == "" {
+		channel = "nochan"
+	}
+
+	_, error := os.Stat(filePath) //validate if file exist
+
+	// check if error is "file not exists"
+	if os.IsNotExist(error) {
+		log.Errorf("%s File does not exist. send again eg: ch1 /user/home/photo.png \n", filePath)
+		return
+	}
+
+	//tranform byte to string
+	fileBase64, fileName, err := base64File(filePath)
+	if err != nil {
+		return
+	}
+
+	command := fmt.Sprintf("%s %s %s %s \n", send, channel, fileName, fileBase64)
+	log.Debug(command)
+	_, err = c.conn.Write([]byte(command))
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func base64File(filePath string) (string, string, error) {

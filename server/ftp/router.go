@@ -61,6 +61,7 @@ func Router(conn *Conn) {
 		}
 	}
 	if inputClient.Err() != nil {
+		log.Warn(inputClient.Err())
 		log.Error(inputClient.Err())
 	}
 }
