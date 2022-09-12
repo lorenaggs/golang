@@ -39,7 +39,7 @@ func (c *Client) read() {
 
 func (c *Client) SendFile(input string) {
 	sendCommand := strings.Fields(input)
-	if len(sendCommand) == 1 {
+	if len(sendCommand) > 1 && len(sendCommand) <= 3 {
 		log.Error("Command Invalid, eg: send [channel] [path file]")
 		return
 	}
