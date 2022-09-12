@@ -18,7 +18,6 @@ func init() {
 	flag.StringVar(&rootDir, "rootDir", ".", "root directory")
 	flag.Parse()
 	log.SetFormatter(&log.TextFormatter{})
-
 	// Only log the warning severity or above.
 	log.SetLevel(log.DebugLevel)
 }
