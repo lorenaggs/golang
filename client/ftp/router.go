@@ -23,9 +23,11 @@ func Router(c *Client) {
 
 	for {
 		input, err := reader.ReadString('\n')
+
 		if len(input) == 0 {
 			continue
 		}
+
 		log.Debug(strings.Contains(input, join))
 		if strings.Contains(input, send) {
 			c.SendFile(input)

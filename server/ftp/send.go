@@ -1,7 +1,22 @@
 package ftp
 
-func (c *Conn) retr(args []string) {
-	/*if len(args) != 1 {
+import (
+	log "github.com/sirupsen/logrus"
+	"io"
+	"os"
+	"path/filepath"
+)
+
+type file struct {
+	channel    string
+	fileName   string
+	fileBase64 string
+}
+
+var filesShared []*file
+
+func (c *Conn) send(args []string) {
+	if len(args) != 1 {
 		c.respond(status501)
 		return
 	}
@@ -28,5 +43,5 @@ func (c *Conn) retr(args []string) {
 		return
 	}
 	io.WriteString(dataConn, c.EOL())
-	c.respond(status226)*/
+	c.respond(status226)
 }

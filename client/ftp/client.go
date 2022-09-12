@@ -60,7 +60,7 @@ func (c *Client) SendFile(input string) {
 
 	// check if error is "file not exists"
 	if os.IsNotExist(error) {
-		log.Errorf("%s File does not exist. send again eg: ch1 /user/home/photo.png \n", filePath)
+		log.Errorf("%s File does not exist. send again eg: send ch1 /user/home/photo.png \n", filePath)
 		return
 	}
 
