@@ -6,6 +6,7 @@ import (
 	"github.com/lorenaggs/golang/client/ftp"
 	log "github.com/sirupsen/logrus"
 	"net"
+	"path/filepath"
 )
 
 var host string
@@ -19,8 +20,9 @@ func init() {
 	flag.Parse()
 	log.SetFormatter(&log.TextFormatter{})
 	// Only log the warning severity or above.
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.InfoLevel)
 }
+
 func main() {
 	fmt.Printf(rootDir)
 	logger := log.WithFields(log.Fields{
@@ -40,5 +42,10 @@ func main() {
 }
 
 func handleConnections(c net.Conn, rootDir string) {
-	ftp.Router(ftp.NewConn(c, rootDir))
+	absPath, err := filepath.Abs(rootDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ftp.Router(ftp.NewConn(c, absPath))
+
 }

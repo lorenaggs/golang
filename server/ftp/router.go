@@ -51,7 +51,7 @@ func Router(conn *Conn) {
 			conn.respond(status221)
 			return
 		case "send": // get //the client secretly sends a port
-			conn.retr(args)
+			conn.send(args)
 		case "typeof":
 			conn.setDataType(args)
 		case "chan":

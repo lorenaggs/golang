@@ -17,6 +17,7 @@ type Client struct {
 	conn    net.Conn //will do all the direct communication with the server for us.
 	rootDir string   //we specified for the server (the place where public files will live)
 	workDir string   //the current working directory for the connection
+	channel string
 }
 
 func NewConn(conn net.Conn, rootDir string) *Client {
@@ -34,12 +35,21 @@ func (c *Client) read() {
 		msg := <-response
 		//this response is important to get after login user
 		log.Info(msg)
+
+		if strings.Contains(msg, "you are in the channel") {
+			nameChan := strings.Split(msg, ":")
+			c.channel = nameChan[1]
+			CreateFolder(c, nameChan[1])
+		}
 	}
+
 }
 
 func (c *Client) SendFile(input string) {
 	sendCommand := strings.Fields(input)
-	if len(sendCommand) > 1 && len(sendCommand) <= 3 {
+	log.Debug(len(sendCommand))
+
+	if len(sendCommand) == 1 && len(sendCommand) > 3 {
 		log.Error("Command Invalid, eg: send [channel] [path file]")
 		return
 	}
@@ -52,6 +62,7 @@ func (c *Client) SendFile(input string) {
 	if len(channelPath) == 2 {
 		channel, filePath = channelPath[0], channelPath[1]
 	}
+
 	if channel == "" {
 		channel = "nochan"
 	}
@@ -92,11 +103,13 @@ func base64File(filePath string) (string, string, error) {
 		log.Error("Error reading file", err.Error())
 		return "", "", err
 	}
+
 	fileInfo, err := fileOpen.Stat()
 	if err != nil {
 		log.Error("Error reading file", err.Error())
 		return "", "", err
 	}
+
 	if len(fileByte) > MaxBufferByte {
 		log.Errorf("%s File is higher that permited %d \n", filePath, MaxBufferMb)
 		err = errors.New("File is higher that permited ")
@@ -111,10 +124,18 @@ func base64File(filePath string) (string, string, error) {
 	logger.Debug("file information")
 	return fileBase64, fileInfo.Name(), nil
 }
-func createFolder(c *Client, channel string) {
-	path := filepath.Join(c.rootDir, c.workDir, c.conn.RemoteAddr().String(), channel)
+
+func CreateFolder(c *Client, channel string) {
+
+	id := c.conn.LocalAddr().String()
+	idNumber := strings.Split(id, "]:")
+
+	path := filepath.Join(c.rootDir, c.workDir, idNumber[1], channel)
+	log.Debug(c.rootDir, c.workDir, idNumber[1], channel)
+	//fmt.Println(c.rootDir, c.workDir, idNumber[1], channel)
+
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		log.Info(":: folder created ")
-		return
+		//return
 	}
 }
