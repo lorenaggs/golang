@@ -6,8 +6,6 @@ import (
 	"net"
 )
 
-var UsersConnected []*dataUser
-
 // Conn represents a connection to the FTP server
 type Conn struct {
 	conn     net.Conn  //will do all the direct communication with the client for us.
@@ -23,7 +21,7 @@ func NewConn(conn net.Conn, rootDir string) *Conn {
 	logger := log.WithFields(log.Fields{
 		"function": "NewConn",
 	})
-	logger.Info("init config connection")
+	logger.Info("Init config connection")
 	return &Conn{
 		conn:    conn,
 		rootDir: rootDir,

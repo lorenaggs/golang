@@ -47,5 +47,4 @@ func handleConnections(c net.Conn, rootDir string) {
 		log.Fatal(err)
 	}
 	ftp.Router(ftp.NewConn(c, absPath))
-
 }

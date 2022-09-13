@@ -2,6 +2,8 @@ package ftp
 
 import "net"
 
+var UsersConnected []*dataUser
+
 type dataUser struct {
 	conn    net.Conn
 	ip      string

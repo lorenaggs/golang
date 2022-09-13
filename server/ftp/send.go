@@ -1,11 +1,6 @@
 package ftp
 
-import (
-	log "github.com/sirupsen/logrus"
-	"io"
-	"os"
-	"path/filepath"
-)
+import log "github.com/sirupsen/logrus"
 
 type file struct {
 	channel    string
@@ -16,32 +11,29 @@ type file struct {
 var filesShared []*file
 
 func (c *Conn) send(args []string) {
-	if len(args) != 1 {
+
+	if len(args) != 3 {
 		c.respond(status501)
 		return
 	}
 
-	path := filepath.Join(c.rootDir, c.workDir, args[0])
-	file, err := os.Open(path)
-	if err != nil {
-		log.Error(err)
-		c.respond(status550)
-	}
-	c.respond(status150)
+	var channelSend = args[0]
 
-	dataConn, err := c.dataConnect()
-	if err != nil {
-		log.Error(err)
-		c.respond(status425)
-	}
-	defer dataConn.Close()
+	isValid := Filter(ChannelsAvailable, func(ch string) bool {
+		return ch == channelSend
+	})
 
-	_, err = io.Copy(dataConn, file)
-	if err != nil {
-		log.Error(err)
-		c.respond(status426)
-		return
+	if len(isValid) != 1 {
+		channelSend = c.dataUser.channel
 	}
-	io.WriteString(dataConn, c.EOL())
-	c.respond(status226)
+
+	file := &file{
+		channel:    channelSend,
+		fileName:   args[1],
+		fileBase64: args[2],
+	}
+
+	filesShared = append(filesShared, file)
+
+	log.Info(len(filesShared))
 }

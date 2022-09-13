@@ -2,7 +2,7 @@ package ftp
 
 type dataType int
 
-//keyword to set up the dataType constants ascii = 0 , binary = 1.
+// keyword to set up the dataType constants ascii = 0 , binary = 1.
 const (
 	ascii dataType = iota
 	binary

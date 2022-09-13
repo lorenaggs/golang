@@ -123,6 +123,7 @@ func base64File(filePath string) (string, string, error) {
 	})
 	logger.Debug("file information")
 	return fileBase64, fileInfo.Name(), nil
+
 }
 
 func CreateFolder(c *Client, channel string) {
@@ -131,11 +132,10 @@ func CreateFolder(c *Client, channel string) {
 	idNumber := strings.Split(id, "]:")
 
 	path := filepath.Join(c.rootDir, c.workDir, idNumber[1], channel)
-	log.Debug(c.rootDir, c.workDir, idNumber[1], channel)
-	//fmt.Println(c.rootDir, c.workDir, idNumber[1], channel)
 
-	if err := os.MkdirAll(path, os.ModePerm); err != nil {
-		log.Info(":: folder created ")
-		//return
+	if err := os.MkdirAll(path, os.ModePerm); err == nil {
+		log.Info("::  ✓ Folder created, it might take a few seconds")
+	} else {
+		log.Info(":: x Folder not created ")
 	}
 }

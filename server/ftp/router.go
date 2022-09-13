@@ -11,7 +11,7 @@ import (
 
 const (
 	MaxBufferMb   = 10
-	MaxBufferByte = 10 * 1024 * 1024
+	MaxBufferByte = MaxBufferMb * 1024 * 1024
 )
 
 // Serve scans incoming requests for valid commands and routes them to handler functions.
@@ -38,6 +38,7 @@ func Router(conn *Conn) {
 			log.Warn("Client doesn't send command JOIN.")
 			continue
 		}
+
 		switch command {
 		case "join":
 			conn.joinChannel(args)
