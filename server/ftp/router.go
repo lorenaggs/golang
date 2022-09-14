@@ -14,6 +14,15 @@ const (
 	MaxBufferByte = MaxBufferMb * 1024 * 1024
 )
 
+/*
+type userConected struct {
+	channel    string
+	fileName   string
+	fileBase64 string
+}
+
+var users []*userConected*/
+
 // Serve scans incoming requests for valid commands and routes them to handler functions.
 func Router(conn *Conn) {
 	conn.respond(status220)                    //The first thing we do upon entering Serve is to issue a 220 response to the client,
@@ -29,9 +38,14 @@ func Router(conn *Conn) {
 
 		command, args := input[0], input[1:] // you can see exactly what the client is sending
 		log.WithFields(log.Fields{
-			"args":    args,
+			"args":    args[0:],
 			"command": command,
 		}).Info("The client is sending!")
+
+		/*users := args[0:]
+		if len(users) == 3 {
+			log.Info("File received from client")
+		}*/
 
 		//log.Printf("<< %s %v", command, args) // you can see exactly what the client is sending
 		if command != "join" && command != "chan" && !conn.hasUserChannel() {
@@ -65,4 +79,5 @@ func Router(conn *Conn) {
 		log.Warn(inputClient.Err())
 		log.Error(inputClient.Err())
 	}
+
 }

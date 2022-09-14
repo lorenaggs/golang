@@ -123,7 +123,6 @@ func base64File(filePath string) (string, string, error) {
 	})
 	logger.Debug("file information")
 	return fileBase64, fileInfo.Name(), nil
-
 }
 
 func CreateFolder(c *Client, channel string) {

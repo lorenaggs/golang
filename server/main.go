@@ -20,6 +20,8 @@ func init() {
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
+
+	log.SetLevel(log.DebugLevel)
 }
 
 // net.Listen  whit .Accept is similar to  http.ListenAndServe, here specify the protocol to use TCP and the address

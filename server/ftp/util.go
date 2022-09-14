@@ -1,8 +1,8 @@
 package ftp
 
 // Filter allows us to find an object or a specific data in an array
-func Filter(vs []string, f func(string) bool) []string {
-	filtered := make([]string, 0)
+func Filter[T any](vs []T, f func(T) bool) []T {
+	filtered := make([]T, 0)
 	for _, v := range vs {
 		if f(v) {
 			filtered = append(filtered, v)

@@ -2,6 +2,7 @@ package ftp
 
 import (
 	log "github.com/sirupsen/logrus"
+	"net"
 	"strings"
 )
 
@@ -12,6 +13,8 @@ const (
 	status204 = "204 Update okay, you are in the channel :%s"
 	status220 = "220 Service ready for new user. Please Join into a CHANNEL"
 	status221 = "221 Service closing control connection."
+	status222 = "222 The server has received the file :%s"
+	status223 = "223 You have received a file"
 	status226 = "226 Closing data connection. Requested file action successful."
 	status230 = "230 User %s logged in, proceed." //todo: tomar como referencia para enviar el canal al cliente
 	status425 = "425 Can't open data connection."
@@ -39,6 +42,13 @@ The only thing to watch out for here is the call to c.EOL, which addresses a qui
 func (c *Conn) respond(s string) {
 	//log.Info(">> ::SERVER: ", s)
 	_, err := c.conn.Write([]byte(" # " + s + "\n"))
+	if err != nil {
+		log.Error(err)
+	}
+}
+
+func RespondUsers(c net.Conn, s string) {
+	_, err := c.Write([]byte(" # " + s + "\n"))
 	if err != nil {
 		log.Error(err)
 	}

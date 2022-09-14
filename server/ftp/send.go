@@ -1,6 +1,9 @@
 package ftp
 
-import log "github.com/sirupsen/logrus"
+import (
+	"fmt"
+	log "github.com/sirupsen/logrus"
+)
 
 type file struct {
 	channel    string
@@ -10,6 +13,8 @@ type file struct {
 
 var filesShared []*file
 
+var fileUsers []*file
+
 func (c *Conn) send(args []string) {
 
 	if len(args) != 3 {
@@ -18,7 +23,6 @@ func (c *Conn) send(args []string) {
 	}
 
 	var channelSend = args[0]
-
 	isValid := Filter(ChannelsAvailable, func(ch string) bool {
 		return ch == channelSend
 	})
@@ -35,5 +39,26 @@ func (c *Conn) send(args []string) {
 
 	filesShared = append(filesShared, file)
 
+	//todo : envio rápido tomar objeto file,y buscar todos los usuarios que pertenecen al canal del archivo que se recibe en el servidor
+	//todo : crear una go rutina,
+	//todo : crear canal que avise cuando se ha enviado el archivo
+
 	log.Info(len(filesShared))
+
+	if filesShared != nil {
+		c.respond(fmt.Sprintf(status222, channelSend))
+	}
+
+	userByChannel := Filter(UsersConnected, func(user *dataUser) bool {
+
+		return user.ip != c.dataUser.ip && user.channel == channelSend
+	})
+
+	for _, user := range userByChannel {
+		RespondUsers(user.conn, status223)
+		log.Info(user.ip)
+	}
+
+	log.Debug("A estos usuarios voy a enviar los archivos", len(userByChannel))
+
 }

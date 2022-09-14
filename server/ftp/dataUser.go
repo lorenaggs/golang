@@ -1,6 +1,8 @@
 package ftp
 
-import "net"
+import (
+	"net"
+)
 
 var UsersConnected []*dataUser
 
@@ -11,6 +13,7 @@ type dataUser struct {
 }
 
 func SetUser(conn net.Conn, ip string, channel string) *dataUser {
+
 	return &dataUser{
 		conn:    conn,
 		ip:      ip,

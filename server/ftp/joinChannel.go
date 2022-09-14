@@ -2,6 +2,7 @@ package ftp
 
 import (
 	"fmt"
+	"strings"
 )
 
 /*
@@ -31,10 +32,11 @@ func addUser(c *Conn, channel string) {
 		responseMessage = status204
 	}
 
-	c.dataUser = SetUser(c.conn, c.conn.RemoteAddr().String(), channel)
+	id := c.conn.RemoteAddr().String()
+	idNumber := strings.Split(id, "]:")
 
+	c.dataUser = SetUser(c.conn, idNumber[1], channel)
 	UsersConnected = append(UsersConnected, c.dataUser)
-
 	c.respond(fmt.Sprintf(responseMessage, channel))
 }
 
