@@ -14,7 +14,7 @@ const (
 	status220 = "220 Service ready for new user. Please Join into a CHANNEL"
 	status221 = "221 Service closing control connection."
 	status222 = "222 The server has received the file :%s"
-	status223 = "223 You have received a file"
+	status223 = "223 You have received a file ::%s %s %s %s"
 	status226 = "226 Closing data connection. Requested file action successful."
 	status230 = "230 User %s logged in, proceed." //todo: tomar como referencia para enviar el canal al cliente
 	status425 = "425 Can't open data connection."

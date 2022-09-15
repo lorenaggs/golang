@@ -13,8 +13,6 @@ type file struct {
 
 var filesShared []*file
 
-var fileUsers []*file
-
 func (c *Conn) send(args []string) {
 
 	if len(args) != 3 {
@@ -55,8 +53,10 @@ func (c *Conn) send(args []string) {
 	})
 
 	for _, user := range userByChannel {
-		RespondUsers(user.conn, status223)
-		log.Info(user.ip)
+
+		command := fmt.Sprintf(status223, user.channel, file.fileName, file.fileBase64, user.ip)
+		RespondUsers(user.conn, command)
+		log.Debug(command)
 	}
 
 	log.Debug("A estos usuarios voy a enviar los archivos", len(userByChannel))
