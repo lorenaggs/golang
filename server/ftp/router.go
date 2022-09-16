@@ -45,7 +45,7 @@ func Router(conn *Conn) {
 			conn.list(args)
 		case "port":
 			conn.port(args)
-		case "user":
+		case "user": //ip that the client has
 			conn.user(args)
 		case "exit":
 			conn.respond(status221)
@@ -60,6 +60,7 @@ func Router(conn *Conn) {
 			conn.respond(status502)
 		}
 	}
+
 	if inputClient.Err() != nil {
 		log.Warn(inputClient.Err())
 		log.Error(inputClient.Err())

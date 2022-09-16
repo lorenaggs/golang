@@ -37,10 +37,6 @@ func (c *Conn) send(args []string) {
 
 	filesShared = append(filesShared, file)
 
-	//todo : envio rápido tomar objeto file,y buscar todos los usuarios que pertenecen al canal del archivo que se recibe en el servidor
-	//todo : crear una go rutina,
-	//todo : crear canal que avise cuando se ha enviado el archivo
-
 	log.Info(len(filesShared))
 
 	if filesShared != nil {

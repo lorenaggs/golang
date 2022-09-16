@@ -11,6 +11,7 @@ const (
 	status200 = "200 Command okay."
 	status201 = "201 Command okay, you are in the channel :%s"
 	status204 = "204 Update okay, you are in the channel :%s"
+	status205 = "205 Your client ip is :%s"
 	status220 = "220 Service ready for new user. Please Join into a CHANNEL"
 	status221 = "221 Service closing control connection."
 	status222 = "222 The server has received the file :%s"

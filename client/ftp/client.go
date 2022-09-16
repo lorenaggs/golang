@@ -20,6 +20,13 @@ type Client struct {
 	channel string
 }
 
+type file struct {
+	channel    string
+	fileName   string
+	fileBase64 string
+	id         string
+}
+
 func NewConn(conn net.Conn, rootDir string) *Client {
 	return &Client{
 		conn:    conn,
@@ -34,13 +41,49 @@ func (c *Client) read() {
 		go GetResponseServer(c.conn, response)
 		msg := <-response
 		//this response is important to get after login user
-		log.Info(msg)
 
 		if strings.Contains(msg, "you are in the channel") {
 			nameChan := strings.Split(msg, ":")
 			c.channel = nameChan[1]
 			CreateFolder(c, nameChan[1])
 		}
+
+		if strings.Contains(msg, "223") {
+			fileData := strings.Split(msg, "::")
+			input := strings.Fields(fileData[1])
+			file := &file{
+				channel:    input[0],
+				fileName:   input[1],
+				fileBase64: input[2],
+				id:         input[3],
+			}
+			path := filepath.Join(c.rootDir, c.workDir, file.id, c.workDir, file.channel, c.workDir, file.fileName)
+			msg = fileData[0]
+			log.Info(path)
+
+			bufferFile := len(file.fileBase64)
+			decoded := make([]byte, bufferFile*bufferFile/base64.StdEncoding.DecodedLen(bufferFile))
+			_, err := base64.StdEncoding.Decode(decoded, []byte(file.fileBase64))
+			log.Debug(decoded)
+			if err != nil {
+				msg = err.Error()
+			}
+			fileCreate, err := os.Create(path)
+
+			if err != nil {
+				msg = err.Error()
+			}
+			defer fileCreate.Close()
+
+			if _, err := fileCreate.Write(decoded); err != nil {
+				msg = err.Error()
+			}
+
+			if err := fileCreate.Sync(); err != nil {
+				msg = err.Error()
+			}
+		}
+		log.Info(msg)
 	}
 
 }
@@ -130,7 +173,7 @@ func CreateFolder(c *Client, channel string) {
 	id := c.conn.LocalAddr().String()
 	idNumber := strings.Split(id, "]:")
 
-	path := filepath.Join(c.rootDir, c.workDir, idNumber[1], channel)
+	path := filepath.Join(c.rootDir, c.workDir, idNumber[1], c.workDir, strings.TrimSpace(channel))
 
 	if err := os.MkdirAll(path, os.ModePerm); err == nil {
 		log.Info("::  ✓ Folder created, it might take a few seconds")
