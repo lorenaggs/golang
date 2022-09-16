@@ -33,7 +33,7 @@ func Router(conn *Conn) {
 			"command": command,
 		}).Info("The client is sending!")
 
-		if command != "join" && command != "chan" && !conn.hasUserChannel() {
+		if command != "exit" && command != "join" && command != "chan" && !conn.hasUserChannel() {
 			log.Warn("Client doesn't send command JOIN.")
 			continue
 		}
@@ -48,8 +48,7 @@ func Router(conn *Conn) {
 		case "user": //ip that the client has
 			conn.user(args)
 		case "exit":
-			conn.respond(status221)
-			return
+			conn.exit()
 		case "send": // get //the client secretly sends a port
 			conn.send(args)
 		case "typeof":

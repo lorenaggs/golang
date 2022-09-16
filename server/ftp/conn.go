@@ -4,6 +4,7 @@ package ftp
 import (
 	log "github.com/sirupsen/logrus"
 	"net"
+	"strings"
 )
 
 // Conn represents a connection to the FTP server
@@ -14,6 +15,12 @@ type Conn struct {
 	rootDir  string    //we specified for the server (the place where public files will live)
 	workDir  string    //the current working directory for the connection
 	dataUser *dataUser //handle information about user connection
+}
+
+func (c *Conn) RemoteAddr() string {
+	id := c.conn.RemoteAddr().String()
+	idNumber := strings.Split(id, "]:")
+	return idNumber[1]
 }
 
 // NewConn returns a new FTP connection
