@@ -7,6 +7,7 @@ const (
 	channel    = "chan"
 	listFolder = "list"
 	send       = "send"
+	//exit       = "exit"
 )
 const (
 	MaxBufferMb   = 10

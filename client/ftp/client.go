@@ -83,6 +83,11 @@ func (c *Client) read() {
 				msg = err.Error()
 			}
 		}
+		if strings.Contains(msg, "224") {
+			log.Info("Connection closed successfully")
+			os.Exit(3)
+		}
+
 		log.Info(msg)
 	}
 

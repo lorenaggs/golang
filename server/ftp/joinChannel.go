@@ -41,6 +41,7 @@ func addUser(c *Conn, channel string) {
 }
 
 func (c *Conn) hasUserChannel() bool {
+
 	if c.dataUser == nil {
 		c.respond(lbl_question_channles)
 	}
