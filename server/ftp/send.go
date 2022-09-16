@@ -37,7 +37,7 @@ func (c *Conn) send(args []string) {
 
 	filesShared = append(filesShared, file)
 
-	log.Info(len(filesShared))
+	//log.Info(len(filesShared))
 
 	if filesShared != nil {
 		c.respond(fmt.Sprintf(status222, channelSend))
@@ -55,6 +55,6 @@ func (c *Conn) send(args []string) {
 		log.Debug(command)
 	}
 
-	log.Debug("A estos usuarios voy a enviar los archivos", len(userByChannel))
+	log.Debug("A estos usuarios voy a enviar los archivos ", len(userByChannel))
 
 }
