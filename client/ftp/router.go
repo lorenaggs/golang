@@ -15,7 +15,7 @@ func Router(c *Client) {
 	log.Warn("Please, first join into a channel, eg : join ch1")
 	const menu = "\n\n M E N U: (select an option eg: join ch1) \n\n " +
 		"join [ARG]\t\t\t\tSubscribe into another channel.  \n " +
-		"send [chan] [PATH]\t\t\tSend file into channel.\n " +
+		"send [PATH]\t\t\tSend file into channel.\n " +
 		"chan\t\t\t\t\tList all channels \n " +
 		"exit\t\t\t\t\tClose connection\n\n\n"
 	fmt.Println(menu)

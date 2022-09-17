@@ -23,9 +23,10 @@ The program has 3 predefined channels (ch1, ch2 and ch3, you can be consulted by
 
 ![Image text](./photos/commandjoin.png)
 
-### 2.1.2. send [chan] [PATH]
-To send a file to another client you use the "send [chan] [PATH] command" (you can send it to a different channel than the one you have joined) and it will notify other clients that they have joined the channel.
+### 2.1.2. send [PATH]
 
+
+To send a file to another client, use the "send [PATH]" command, it will send the file to clients that are in the same channel and notify other clients that they have joined the channel, in case the client wants to sending a file to another channel can be done using the command "send [chan] [PATH]"
 ![Image text](./photos/commandsend.png)
 
 ### 2.1.3. chan
